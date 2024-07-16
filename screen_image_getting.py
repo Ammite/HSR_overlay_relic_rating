@@ -2,6 +2,26 @@ import numpy as np
 import cv2
 from mss import mss
 from PIL import Image
+import time
+
+def get_test_data():
+    image_path = 'test_data/test.png'
+    image = cv2.imread(image_path)
+    # Убрать иконки замка и мусорки
+    x, y, w, h = 450, 0, 100, 150  
+    image[y:y+h, x:x+w] = (0, 0, 0)
+    # Убрать иконки статов
+    x, y, w, h = 0, 180, 60, 500  
+    image[y:y+h, x:x+w] = (0, 0, 0)
+    # Преобразуем изображение в оттенки серого
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Применим бинаризацию для улучшения качества распознавания
+    _, binary = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
+    # Уберем шум с изображения
+    binary = cv2.medianBlur(binary, 3)
+    # Преобразуем изображение в формат PIL
+    pil_image = Image.fromarray(binary)
+    return pil_image
 
 def get_screen_in_character_relics():
     '''
