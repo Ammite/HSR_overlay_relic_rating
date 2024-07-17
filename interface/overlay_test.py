@@ -1,5 +1,5 @@
 import tkinter as tk
-
+import ocr.scan_text as scan_text
 def create_overlay(text = ""):
     '''
     text divided to 3 parts
@@ -8,25 +8,7 @@ def create_overlay(text = ""):
     text is str or object to divide by parts to display in grid
     tkinter wiki: https://metanit.com/python/tkinter/2.6.php
     '''
-
     
-    character_menu_text = "Rating: S\n"
-    character_menu_text += "Good for: DoT\n"
-    character_menu_text += "Crit Chance: 10%\n"
-    character_menu_text += " \tHP: 10\n \tDEF: 10\n \tATK: 10\n \tCrit Damage: 20%"
-
-    inventory_menu_text = "Rating: A\n"
-    inventory_menu_text += "Good for: Crit hero\n"
-    inventory_menu_text += "Crit Chance: 20%\n"
-    inventory_menu_text += " \tHP: 20\n \tDEF: 20\n \tATK: 20\n \tCrit Damage: 30%"
-
-    uncraft_menu_text = "Rating: B\n"
-    uncraft_menu_text += "Good for: Break effect hero\n"
-    uncraft_menu_text += "Crit Chance: 15%\n"
-    uncraft_menu_text += " \tHP: 15\n \tDEF: 15\n \tATK: 15\n \tCrit Damage: 25%"
-
-    text = "Choose source!"
-
     overlay = tk.Tk()
     width = 300
     height = 200
@@ -47,16 +29,26 @@ def create_overlay(text = ""):
     overlay.columnconfigure(2, weight=1)
     overlay.rowconfigure(0, weight=1)
     overlay.rowconfigure(1, weight=30)
+
     
+    text = scan_text.get_text()
+
+    character_menu_text = text['character_menu_text']
+    inventory_menu_text = text['inventory_menu_text']
+    uncraft_menu_text = text['uncraft_menu_text']
+
     # Обработка текста
     def character_menu_click():
         label.config(text=character_menu_text)
+        overlay.source = "character_menu_text"
 
     def inventory_menu_click():
         label.config(text=inventory_menu_text)
+        overlay.source = "inventory_menu_text"
     
     def uncraft_menu_click():
         label.config(text=uncraft_menu_text)
+        overlay.source = "uncraft_menu_text"
 
     # Создадим выбор источника
     tab1 = tk.Button(overlay, text="Character", font=('Helvetica', 10), fg='white', bg='black', command=character_menu_click)
@@ -69,13 +61,19 @@ def create_overlay(text = ""):
     tab3.grid(row=0, column=2, padx=4, pady=2, sticky=tk.NSEW)
 
     # Создаем метку с текстом
-    label = tk.Label(overlay, text=text, font=('Helvetica', 10), fg='white', bg='black', wraplength=480)
+    label = tk.Label(overlay, text="Choose source!", font=('Helvetica', 10), fg='white', bg='black', wraplength=480)
     label.grid(row=1, column=0, columnspan=3, padx=6, pady=6, sticky=tk.NSEW)
 
 
     # Закрытие окна по клику
     overlay.bind("<Escape>", lambda e: overlay.destroy())
     
+
+    def update_text():
+        overlay.text = scan_text.get_text()
+        source = overlay.source if hasattr(overlay, 'source') else 'character_menu_text'
+        label.config(text=overlay.text[source])
+        overlay.after(2000, update_text)
     overlay.mainloop()
 
 if __name__ == '__main__':

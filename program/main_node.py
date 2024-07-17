@@ -4,21 +4,30 @@ import time
 from imaging.screen_image_getting import *
 import tkinter as tk
 from interface.overlay import create_overlay
+from multiprocessing import Pool
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
+
+
+def process_image(image_func):
+    return pytesseract.image_to_string(image_func(), lang='rus+en', config='--psm 6')
+
 
 def main_cycle():
     root = None
+    image_functions = [get_screen_in_character_relics, get_screen_in_inventory, get_screen_in_uncraft]
+
 
     while True:
         time.sleep(5)
         print("new iteration")
-        character_menu_relic = pytesseract.image_to_string(get_screen_in_character_relics(), lang='rus+en', config='--psm 6')
-        inventory_menu_relic = pytesseract.image_to_string(get_screen_in_inventory(), lang='rus+en', config='--psm 6')
-        uncraft_menu_relic = pytesseract.image_to_string(get_screen_in_uncraft(), lang='rus+en', config='--psm 6')
+
+        with Pool(processes=3) as pool:
+            results = pool.map(process_image, image_functions)
+
         print("got images")
-        character_menu_relic_rows = [row for row in character_menu_relic.split('\n') if row.strip()]
-        inventory_menu_relic_rows = [row for row in inventory_menu_relic.split('\n') if row.strip()]
-        uncraft_menu_relic_rows = [row for row in uncraft_menu_relic.split('\n') if row.strip()]
+        character_menu_relic_rows = [row for row in results[0].split('\n') if row.strip()]
+        inventory_menu_relic_rows = [row for row in results[1].split('\n') if row.strip()]
+        uncraft_menu_relic_rows = [row for row in results[2].split('\n') if row.strip()]
         text = {}
         text['character_menu_text'] = "\n".join(character_menu_relic_rows)
         text['inventory_menu_text']= "\n".join(inventory_menu_relic_rows)
@@ -31,6 +40,7 @@ def main_cycle():
         # if cv2.waitKey(25) & 0xFF == ord("q"):
         #         cv2.destroyAllWindows()
         #         break
+        
         print("creating overlay")
         root = create_overlay(text, root)
         root.update()
