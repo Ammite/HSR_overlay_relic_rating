@@ -1,14 +1,21 @@
-import pytesseract
-from pytesseract import Output
-import cv2
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
-img = cv2.imread('test_data/test.png')
+import tkinter as tk
 
-d = pytesseract.image_to_data(img, output_type=Output.DICT)
-n_boxes = len(d['level'])
-for i in range(n_boxes):
-    (x, y, w, h) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
-    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 1)
+def create_overlay(text):
+    # Создаем главное окно
+    root = tk.Tk()
+    root.overrideredirect(True)  # Убираем рамку окна
+    root.geometry('300x100+0+0')  # Устанавливаем размер окна и его позицию (300x100 пикселей, в верхнем левом углу)
+    root.attributes('-topmost', True)  # Устанавливаем окно поверх всех остальных
 
-cv2.imshow('img', img)
-cv2.waitKey(0)
+    # Создаем метку с текстом
+    label = tk.Label(root, text=text, font=('Helvetica', 20), fg='white', bg='black', wraplength=280)
+    label.pack(expand=True, fill='both', padx=10, pady=10)
+
+    # Закрытие окна по клику
+    label.bind("<Button-1>", lambda e: root.destroy())
+
+    # Запускаем главный цикл приложения
+    root.mainloop()
+
+# Пример использования
+create_overlay("Ваш текст здесь. Это пример длинного текста, который должен переноситься на несколько строк.")

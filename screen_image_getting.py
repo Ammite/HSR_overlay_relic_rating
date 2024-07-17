@@ -31,6 +31,22 @@ def get_screen_in_character_relics():
         bounding_box = {'top': 150, 'left': 1480, 'width': 420, 'height': 350}
         sct_img = sct.grab(bounding_box)
         image = np.asarray(sct_img)
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+        # Убрать значок замка и мусорки 
+        x, y, w, h = 350, 0, 100, 120  
+        image[y:y+h, x:x+w] = (0, 0, 0)
+        # Убрать иконки статов
+        x, y, w, h = 0, 140, 50, 500  
+        image[y:y+h, x:x+w] = (0, 0, 0)
+        # Преобразуем изображение в оттенки серого
+        # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Применим бинаризацию для улучшения качества распознавания
+        # _, binary = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY_INV)
+        # Уберем шум с изображения
+        # binary = cv2.medianBlur(binary, 3)
+        # Преобразуем изображение в формат PIL
+        # pil_image = Image.fromarray(binary)
+        image = np.asarray(image)
         return image
 
 def get_screen_in_inventory():
@@ -41,6 +57,22 @@ def get_screen_in_inventory():
         bounding_box = {'top': 120, 'left': 1380, 'width': 480, 'height': 480}
         sct_img = sct.grab(bounding_box)
         image = np.asarray(sct_img)
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+        # Убрать значок замка и мусорки 
+        x, y, w, h = 400, 100, 120, 140  
+        image[y:y+h, x:x+w] = (0, 0, 0)
+        # Убрать иконки статов
+        x, y, w, h = 0, 230, 55, 500  
+        image[y:y+h, x:x+w] = (0, 0, 0)
+        # Преобразуем изображение в оттенки серого
+        # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Применим бинаризацию для улучшения качества распознавания
+        # _, binary = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY_INV)
+        # Уберем шум с изображения
+        # binary = cv2.medianBlur(binary, 3)
+        # Преобразуем изображение в формат PIL
+        # pil_image = Image.fromarray(binary)
+        image = np.asarray(image)
         return image
 
 def get_screen_in_uncraft():
@@ -51,6 +83,22 @@ def get_screen_in_uncraft():
         bounding_box = {'top': 120, 'left': 40, 'width': 450, 'height': 480}
         sct_img = sct.grab(bounding_box)
         image = np.asarray(sct_img)
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+        # Убрать значок замка и мусорки 
+        x, y, w, h = 380, 100, 60, 140  
+        image[y:y+h, x:x+w] = (0, 0, 0)
+        # Убрать иконки статов
+        x, y, w, h = 0, 250, 50, 500  
+        image[y:y+h, x:x+w] = (0, 0, 0)
+        # Преобразуем изображение в оттенки серого
+        # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Применим бинаризацию для улучшения качества распознавания
+        # _, binary = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY_INV)
+        # Уберем шум с изображения
+        # binary = cv2.medianBlur(binary, 3)
+        # Преобразуем изображение в формат PIL
+        # pil_image = Image.fromarray(binary)
+        image = np.asarray(image)
         return image
     
 # sct = mss()
